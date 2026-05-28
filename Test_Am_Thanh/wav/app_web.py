@@ -12,6 +12,10 @@ DB_NAME = "history_alerts.db"
 # Thêm link Webhook báo động rung điện thoại (MacroDroid)
 MACRODROID_URL = "https://trigger.macrodroid.com/f8eac30e-fdcf-4d7d-b0dc-d658bee477ab/baodong"
 
+# Thêm cấu hình Bot Telegram (Điền Token và Chat ID của bạn vào đây)
+TELEGRAM_BOT_TOKEN = "" # Ví dụ: "123456789:ABCdefGHIjklMNOpqrSTUvwxYZ"
+TELEGRAM_CHAT_ID = ""   # Ví dụ: "987654321"
+
 # --- 1. QUẢN LÝ CƠ SỞ DỮ LIỆU (SQLite) ---
 def init_db():
     conn = sqlite3.connect(DB_NAME)
@@ -69,6 +73,16 @@ with col1:
                             st.toast("📱 Đã gửi lệnh RUNG đến điện thoại thành công!", icon="🔔")
                         except Exception as e:
                             st.warning(f"Lỗi kích hoạt điện thoại: {e}")
+                        # ---------------------------------------------
+                        
+                        # ------ GỬI TIN NHẮN TELEGRAM ------
+                        if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID:
+                            try:
+                                telegram_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+                                requests.post(telegram_url, json={"chat_id": TELEGRAM_CHAT_ID, "text": "🚨 CẢNH BÁO: Phát hiện âm thanh nguy hiểm!"})
+                                st.toast("📩 Đã gửi cảnh báo qua Telegram!", icon="✈️")
+                            except Exception as e:
+                                st.warning(f"Lỗi gửi Telegram: {e}")
                         # ---------------------------------------------
                         
                     else:
